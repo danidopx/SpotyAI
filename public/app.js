@@ -1,5 +1,5 @@
 import { analyzeProfile, checkHealth, createPlaylist, listPlaylists } from "./api.js";
-import { getAccessToken, getCurrentUser, signInWithEmail } from "./auth.js";
+import { getAccessToken, getCurrentUser, signInWithEmail, signOut } from "./auth.js";
 import { DEFAULT_ANALYSIS_PROMPT } from "./config.js";
 import { connectSpotify } from "./spotify.js";
 import { askForEmail, bindUI, getMomentPrompt, renderAnalysis, renderStatus } from "./ui.js";
@@ -94,15 +94,33 @@ async function bootstrap() {
       } catch (error) {
         renderAnalysis(`Falha ao criar playlist: ${error.message}`);
       }
+    },
+    onLogout: async () => {
+      try {
+        await signOut();
+        latestAnalysis = null;
+        renderStatus("Sessao encerrada.");
+        renderAnalysis("Aguardando analise...");
+        await refreshStatus();
+      } catch (error) {
+        renderStatus(`Falha ao sair: ${error.message}`);
+      }
     }
   });
 
   const url = new URL(window.location.href);
   const spotifyStatus = url.searchParams.get("spotify");
+  const spotifyError = url.searchParams.get("spotify_error");
 
   if (spotifyStatus === "connected") {
     renderStatus("Spotify conectado com sucesso.");
     url.searchParams.delete("spotify");
+    window.history.replaceState({}, "", url);
+  }
+
+  if (spotifyError) {
+    renderStatus(`Falha ao conectar Spotify: ${spotifyError}`);
+    url.searchParams.delete("spotify_error");
     window.history.replaceState({}, "", url);
   }
 

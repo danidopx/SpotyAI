@@ -1,6 +1,21 @@
 import { getEnv } from "./env.js";
 import { getSpotifyConnection, upsertSpotifyConnection } from "./supabase.js";
 
+async function parseSpotifyResponse(response, fallbackMessage) {
+  const text = await response.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (_error) {
+    const snippet = text.slice(0, 180).trim();
+    throw new Error(`${fallbackMessage}: ${snippet}`);
+  }
+}
+
 async function spotifyTokenRequest(params) {
   const clientId = getEnv("SPOTIFY_CLIENT_ID");
   const clientSecret = getEnv("SPOTIFY_CLIENT_SECRET");
@@ -15,7 +30,7 @@ async function spotifyTokenRequest(params) {
     body: new URLSearchParams(params)
   });
 
-  const data = await response.json();
+  const data = await parseSpotifyResponse(response, "Resposta invalida ao obter token do Spotify");
 
   if (!response.ok) {
     throw new Error(data?.error_description || data?.error || "Falha ao obter token do Spotify.");
@@ -50,7 +65,7 @@ export async function spotifyApi(path, accessToken, options = {}) {
     body: options.body ? JSON.stringify(options.body) : undefined
   });
 
-  const data = await response.json();
+  const data = await parseSpotifyResponse(response, "Resposta invalida da API do Spotify");
 
   if (!response.ok) {
     throw new Error(data?.error?.message || "Falha na API do Spotify.");

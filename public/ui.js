@@ -1,8 +1,9 @@
-export function bindUI({ onLogin, onConnectSpotify, onAnalyze, onCreatePlaylist }) {
+export function bindUI({ onLogin, onConnectSpotify, onAnalyze, onCreatePlaylist, onLogout }) {
   document.querySelector("#login-button")?.addEventListener("click", onLogin);
   document.querySelector("#spotify-button")?.addEventListener("click", onConnectSpotify);
   document.querySelector("#analyze-button")?.addEventListener("click", onAnalyze);
   document.querySelector("#playlist-button")?.addEventListener("click", onCreatePlaylist);
+  document.querySelector("#logout-button")?.addEventListener("click", onLogout);
 }
 
 export function getMomentPrompt() {

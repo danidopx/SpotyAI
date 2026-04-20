@@ -1,12 +1,14 @@
 :root {
-  --bg: #08120d;
-  --bg-soft: #112019;
-  --panel: rgba(17, 32, 25, 0.92);
-  --line: rgba(156, 255, 194, 0.16);
-  --text: #edf9f0;
-  --muted: #a9cbb2;
+  --bg: #071018;
+  --bg-soft: #101b28;
+  --panel: rgba(10, 19, 31, 0.78);
+  --line: rgba(139, 250, 191, 0.14);
+  --text: #edf6ff;
+  --muted: #98aabd;
   --accent: #1ed760;
   --accent-strong: #14b84d;
+  --glow: rgba(30, 215, 96, 0.22);
+  --sky: rgba(78, 166, 255, 0.14);
 }
 
 * {
@@ -19,8 +21,9 @@ body {
   font-family: "Segoe UI", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top, rgba(30, 215, 96, 0.18), transparent 32%),
-    linear-gradient(180deg, #09150f 0%, var(--bg) 100%);
+    radial-gradient(circle at top left, var(--glow), transparent 28%),
+    radial-gradient(circle at 85% 20%, var(--sky), transparent 24%),
+    linear-gradient(180deg, #06111c 0%, var(--bg) 100%);
 }
 
 .app-shell {
@@ -34,12 +37,17 @@ body {
   border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--panel);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
 }
 
 .hero {
   padding: 32px;
   margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
+  gap: 28px;
+  overflow: hidden;
 }
 
 .eyebrow {
@@ -66,6 +74,11 @@ h1 {
   max-width: 700px;
   color: var(--muted);
   font-size: 18px;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
 }
 
 .actions {
@@ -96,9 +109,69 @@ button.secondary {
   border: 1px solid var(--line);
 }
 
+button.ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+.hero-visual {
+  position: relative;
+  min-height: 280px;
+}
+
+.visual-disc {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(0.2px);
+}
+
+.visual-disc-a {
+  inset: 12px auto auto 24px;
+  width: 220px;
+  height: 220px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), transparent 12%),
+    radial-gradient(circle at center, rgba(22, 31, 43, 0.2) 0 16%, rgba(30, 215, 96, 0.85) 17%, rgba(10, 19, 31, 0.95) 58%, rgba(6, 17, 28, 0.95) 100%);
+  box-shadow: 0 0 0 18px rgba(255, 255, 255, 0.03);
+}
+
+.visual-disc-b {
+  inset: auto 12px 12px auto;
+  width: 160px;
+  height: 160px;
+  background:
+    radial-gradient(circle at center, rgba(15, 30, 41, 0.2) 0 20%, rgba(78, 166, 255, 0.8) 21%, rgba(10, 19, 31, 0.96) 64%, rgba(6, 17, 28, 0.92) 100%);
+}
+
+.visual-card {
+  position: absolute;
+  right: 0;
+  top: 26px;
+  width: min(100%, 260px);
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+}
+
+.visual-label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .panel-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -123,8 +196,11 @@ pre {
 }
 
 @media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
   .panel-grid {
     grid-template-columns: 1fr;
   }
 }
-

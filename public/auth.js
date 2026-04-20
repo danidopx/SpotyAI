@@ -66,5 +66,9 @@ export async function signInWithEmail(email) {
 
 export async function signOut() {
   const client = await getSupabaseClient();
-  await client.auth.signOut();
+  const { error } = await client.auth.signOut();
+
+  if (error) {
+    throw error;
+  }
 }
