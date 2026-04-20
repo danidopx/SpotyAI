@@ -49,10 +49,11 @@ export async function getCurrentUser() {
 
 export async function signInWithEmail(email) {
   const client = await getSupabaseClient();
+  const { appUrl } = await loadPublicConfig();
   const { error } = await client.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: window.location.origin
+      emailRedirectTo: appUrl || window.location.origin
     }
   });
 
