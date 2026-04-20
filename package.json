@@ -1,0 +1,12 @@
+{
+  "name": "spotyai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SpotyAI - playlists e analises musicais com Spotify, IA, Supabase e Vercel",
+  "scripts": {
+    "start": "vercel dev",
+    "dev": "vercel dev",
+    "check": "node scripts/check-structure.mjs"
+  }
+}

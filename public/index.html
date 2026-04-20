@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpotyAI</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <p class="eyebrow">Spotify + IA + Supabase + Vercel</p>
+        <h1>SpotyAI</h1>
+        <p class="lead">
+          Descubra o que sua musica diz sobre voce e gere playlists com contexto, gosto e momento.
+        </p>
+        <div class="actions">
+          <button id="login-button" type="button">Entrar</button>
+          <button id="spotify-button" type="button" class="secondary">Conectar Spotify</button>
+          <button id="analyze-button" type="button" class="secondary">Analisar perfil</button>
+          <button id="playlist-button" type="button" class="secondary">Criar playlist</button>
+        </div>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel">
+          <h2>Prompt do momento</h2>
+          <textarea id="moment-input" rows="5" placeholder="Ex.: quero uma playlist para foco leve, fim de tarde e clima nostalgico"></textarea>
+        </article>
+
+        <article class="panel">
+          <h2>Status</h2>
+          <pre id="status-output">Carregando...</pre>
+        </article>
+
+        <article class="panel">
+          <h2>Resumo da IA</h2>
+          <pre id="analysis-output">Aguardando analise...</pre>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
