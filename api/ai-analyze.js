@@ -52,7 +52,7 @@ export default async function handler(request, response) {
     const user = await getAuthenticatedUser(request);
     const body = await readJsonBody(request);
     const { prompt, context } = body || {};
-    const model = process.env.AI_MODEL || "gpt-4.1-mini";
+  const model = process.env.AI_MODEL || "gemini-2.5-flash";
     const connection = await getValidSpotifyConnection(user.id);
     const profile = await buildSpotifyProfile(connection.access_token);
 

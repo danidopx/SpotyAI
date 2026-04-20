@@ -30,6 +30,11 @@ Troque pelos valores finais do dominio publicado:
 - `SPOTIFY_REDIRECT_URI=https://SEU-DOMINIO/api/spotify-callback`
 - `APP_URL=https://SEU-DOMINIO`
 
+### IA padrao
+
+- `AI_MODEL=gemini-2.5-flash`
+- `AI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai`
+
 ## 3. Spotify Developer Dashboard
 
 No app do Spotify, cadastre estes Redirect URIs:
@@ -63,4 +68,3 @@ Scopes usados hoje:
 4. Clicar em `Conectar Spotify`.
 5. Clicar em `Analisar perfil`.
 6. Clicar em `Criar playlist`.
-

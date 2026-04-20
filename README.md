@@ -51,6 +51,11 @@ Plataforma web para conectar conta Spotify, entender gosto musical, gerar playli
 - `AI_MODEL`
 - `AI_BASE_URL`
 
+Padrao atual de IA:
+
+- `AI_MODEL=gemini-2.5-flash`
+- `AI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai`
+
 ## Proximos passos
 
 1. Criar o projeto no Supabase e aplicar as migrations.

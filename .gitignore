@@ -7,3 +7,5 @@ supabase/.temp/
 dist/
 coverage/
 
+
+.vercel
