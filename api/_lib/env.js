@@ -5,6 +5,5 @@ export function getEnv(name) {
     throw new Error(`Variavel obrigatoria ausente: ${name}`);
   }
 
-  return value;
+  return String(value).trim();
 }
-
