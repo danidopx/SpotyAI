@@ -29,6 +29,8 @@ export default async function handler(request, response) {
     redirectUrl.searchParams.set("spotify", "connected");
     response.redirect(redirectUrl.toString());
   } catch (callbackError) {
+    console.error("spotify callback error", callbackError);
+
     try {
       const fallbackState = state ? decodeState(state) : null;
       const redirectUrl = new URL(fallbackState?.returnTo || process.env.APP_URL || "https://spotyai.vercel.app");

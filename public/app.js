@@ -6,12 +6,15 @@ import { askForEmail, bindUI, getMomentPrompt, renderAnalysis, renderStatus } fr
 
 let latestAnalysis = null;
 
-async function refreshStatus() {
+async function refreshStatus(flashMessage = "") {
   const user = await getCurrentUser();
   const accessToken = await getAccessToken();
 
   if (!user || !accessToken) {
-    renderStatus("Conta: visitante\nSpotify: desconectado\nPlaylists salvas: 0");
+    const visitorStatus = `Conta: visitante\nSpotify: desconectado\nPlaylists salvas: 0${
+      flashMessage ? `\nAviso: ${flashMessage}` : ""
+    }`;
+    renderStatus(visitorStatus);
     return { user: null, accessToken: null };
   }
 
@@ -26,7 +29,9 @@ async function refreshStatus() {
     : `desconectado${spotify.message ? ` - ${spotify.message}` : ""}`;
 
   renderStatus(
-    `Conta: ${user.email || user.id}\nSpotify: ${spotifyLabel}\nPlaylists salvas: ${playlists.items?.length || 0}`
+    `Conta: ${user.email || user.id}\nSpotify: ${spotifyLabel}\nPlaylists salvas: ${
+      playlists.items?.length || 0
+    }${flashMessage ? `\nAviso: ${flashMessage}` : ""}`
   );
 
   return { user, accessToken, spotify };
@@ -131,20 +136,23 @@ async function bootstrap() {
   const url = new URL(window.location.href);
   const spotifyStatus = url.searchParams.get("spotify");
   const spotifyError = url.searchParams.get("spotify_error");
+  let flashMessage = "";
 
   if (spotifyStatus === "connected") {
-    renderStatus("Spotify conectado com sucesso.");
+    flashMessage = "Spotify conectado com sucesso.";
     url.searchParams.delete("spotify");
-    window.history.replaceState({}, "", url);
   }
 
   if (spotifyError) {
-    renderStatus(`Falha ao conectar Spotify: ${spotifyError}`);
+    flashMessage = `Falha ao conectar Spotify: ${spotifyError}`;
     url.searchParams.delete("spotify_error");
+  }
+
+  if (spotifyStatus || spotifyError) {
     window.history.replaceState({}, "", url);
   }
 
-  await refreshStatus();
+  await refreshStatus(flashMessage);
 }
 
 bootstrap();
