@@ -57,3 +57,9 @@ Plataforma web para conectar conta Spotify, entender gosto musical, gerar playli
 2. Criar o app no Spotify Developer Dashboard e cadastrar o callback.
 3. Configurar os secrets na Vercel.
 4. Testar a jornada: login por magic link, conectar Spotify, analisar perfil e gerar playlist privada.
+
+## Arquivos de apoio
+
+- `.env.local.example`: base para ambiente local e Vercel
+- `DEPLOY_VERCEL.md`: checklist curto de deploy
+- `supabase/sql/init_spotyai.sql`: SQL unico para aplicar direto no painel do Supabase
