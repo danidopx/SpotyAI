@@ -52,3 +52,11 @@ export function listPlaylists(accessToken) {
     }
   });
 }
+
+export function getSpotifyStatus(accessToken) {
+  return request("/api/spotify-refresh", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+}

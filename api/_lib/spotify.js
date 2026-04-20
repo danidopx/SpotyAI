@@ -82,24 +82,43 @@ export async function getValidSpotifyConnection(userId) {
   }
 
   const expiresAt = connection.token_expires_at ? new Date(connection.token_expires_at).getTime() : 0;
-  const shouldRefresh = !connection.access_token || !expiresAt || expiresAt < Date.now() + 60_000;
+  const hasAccessToken = Boolean(connection.access_token);
+  const hasRefreshToken = Boolean(connection.refresh_token);
+  const expiresSoon = expiresAt && expiresAt < Date.now() + 60_000;
 
-  if (!shouldRefresh) {
+  if (hasAccessToken && !expiresSoon) {
     return connection;
   }
 
-  const refreshed = await refreshSpotifyToken(connection.refresh_token);
-  const updatedConnection = await upsertSpotifyConnection({
-    user_id: connection.user_id,
-    spotify_user_id: connection.spotify_user_id,
-    access_token: refreshed.access_token,
-    refresh_token: refreshed.refresh_token || connection.refresh_token,
-    token_expires_at: new Date(Date.now() + refreshed.expires_in * 1000).toISOString(),
-    scope: refreshed.scope || connection.scope,
-    updated_at: new Date().toISOString()
-  });
+  if (hasAccessToken && !hasRefreshToken) {
+    try {
+      await spotifyApi("/me", connection.access_token);
+      return connection;
+    } catch (_error) {
+      throw new Error("Sua conexao com Spotify expirou. Conecte novamente.");
+    }
+  }
 
-  return updatedConnection;
+  if (!hasRefreshToken) {
+    throw new Error("Spotify ainda nao conectado.");
+  }
+
+  try {
+    const refreshed = await refreshSpotifyToken(connection.refresh_token);
+    const updatedConnection = await upsertSpotifyConnection({
+      user_id: connection.user_id,
+      spotify_user_id: connection.spotify_user_id,
+      access_token: refreshed.access_token,
+      refresh_token: refreshed.refresh_token || connection.refresh_token,
+      token_expires_at: new Date(Date.now() + refreshed.expires_in * 1000).toISOString(),
+      scope: refreshed.scope || connection.scope,
+      updated_at: new Date().toISOString()
+    });
+
+    return updatedConnection;
+  } catch (_error) {
+    throw new Error("Sua conexao com Spotify expirou. Conecte novamente.");
+  }
 }
 
 export async function buildSpotifyProfile(accessToken) {

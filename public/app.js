@@ -1,4 +1,4 @@
-import { analyzeProfile, checkHealth, createPlaylist, listPlaylists } from "./api.js";
+import { analyzeProfile, checkHealth, createPlaylist, getSpotifyStatus, listPlaylists } from "./api.js";
 import { getAccessToken, getCurrentUser, signInWithEmail, signOut } from "./auth.js";
 import { DEFAULT_ANALYSIS_PROMPT } from "./config.js";
 import { connectSpotify } from "./spotify.js";
@@ -11,13 +11,25 @@ async function refreshStatus() {
   const accessToken = await getAccessToken();
 
   if (!user || !accessToken) {
-    renderStatus("Sessao: visitante. Entre com e-mail e depois conecte o Spotify.");
+    renderStatus("Conta: visitante\nSpotify: desconectado\nPlaylists salvas: 0");
     return { user: null, accessToken: null };
   }
 
   const playlists = await listPlaylists(accessToken).catch(() => ({ items: [] }));
-  renderStatus(`Sessao ativa: ${user.email || user.id}. Playlists salvas: ${playlists.items?.length || 0}`);
-  return { user, accessToken };
+  const spotify = await getSpotifyStatus(accessToken).catch((error) => ({
+    ok: false,
+    message: error.message
+  }));
+
+  const spotifyLabel = spotify.ok
+    ? `conectado (${spotify.spotify_user_id})`
+    : `desconectado${spotify.message ? ` - ${spotify.message}` : ""}`;
+
+  renderStatus(
+    `Conta: ${user.email || user.id}\nSpotify: ${spotifyLabel}\nPlaylists salvas: ${playlists.items?.length || 0}`
+  );
+
+  return { user, accessToken, spotify };
 }
 
 async function bootstrap() {
@@ -55,10 +67,14 @@ async function bootstrap() {
       renderAnalysis("Gerando analise musical...");
 
       try {
-        const { accessToken } = await refreshStatus();
+        const { accessToken, spotify } = await refreshStatus();
 
         if (!accessToken) {
           throw new Error("Entre no app antes de analisar.");
+        }
+
+        if (!spotify?.ok) {
+          throw new Error("Conecte novamente o Spotify antes de analisar.");
         }
 
         const data = await analyzeProfile(
@@ -77,10 +93,14 @@ async function bootstrap() {
     },
     onCreatePlaylist: async () => {
       try {
-        const { accessToken } = await refreshStatus();
+        const { accessToken, spotify } = await refreshStatus();
 
         if (!accessToken) {
           throw new Error("Entre no app antes de criar a playlist.");
+        }
+
+        if (!spotify?.ok) {
+          throw new Error("Conecte novamente o Spotify antes de criar a playlist.");
         }
 
         const payload = {
